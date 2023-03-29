@@ -24,6 +24,7 @@ public final class EurekaXBinding implements BindingsPropertiesProcessor {
 
     @Override
     public void process(Environment environment, Bindings bindings, Map<String, Object> properties) {
+        log.info("looking for eureka-x bindings");
         if (!environment.getProperty("com.example.bindings.eureka-x.enable", Boolean.class, true)) {
             return;
         }
