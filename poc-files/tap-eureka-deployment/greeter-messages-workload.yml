@@ -1,0 +1,30 @@
+#! this workload connects to Eureka using straight properties loaded through the environment. This only works if the eureka server doesn't have TLS enabled.
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: greeter-messages
+  namespace: my-apps
+  labels:
+    apps.tanzu.vmware.com/workload-type: server
+    apps.tanzu.vmware.com/has-tests: "true"
+    app.kubernetes.io/part-of: greeter
+spec:
+  build:
+    env:
+    - name: BP_JVM_VERSION
+      value: "17"
+    - name: BP_MAVEN_POM_FILE
+      value: "no-such-file"
+    - name: BP_GRADLE_BUILT_ARTIFACT
+      value: "greeter-messages/build/libs/*.jar"
+  env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "development"
+  - name: SPRING_APPLICATION_JSON
+    value: |
+      {"eureka": {"client": {"enabled": true, "serviceUrl": {"defaultZone": "http://eureka-server.service-registry.svc.cluster.local/eureka/"}}, "instance": {"preferIpAddress": true}}}
+  source:
+    git:
+      url: https://github.com/spring-cloud-services-samples/greeting
+      ref:
+        branch: main

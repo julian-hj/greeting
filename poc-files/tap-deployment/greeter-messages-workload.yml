@@ -1,0 +1,24 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: greeter-messages
+  namespace: my-apps
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    apps.tanzu.vmware.com/has-tests: "true"
+    app.kubernetes.io/part-of: greeter
+spec:
+  build:
+    env:
+    - name: BP_JVM_VERSION
+      value: "17"
+    - name: BP_GRADLE_BUILT_MODULE
+      value: "greeter-messages"
+  env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "development"
+  source:
+    git:
+      url: https://github.com/spring-cloud-services-samples/greeting
+      ref:
+        branch: main

@@ -1,0 +1,22 @@
+---
+apiVersion: "config.apps.tanzu.vmware.com/v1alpha4"
+kind: ConfigurationSource
+metadata:
+  name: greeter-config-source
+  namespace: my-apps
+spec:
+  backends:
+    - type: git
+      uri: https://github.com/julian-hj/acs-test
+---
+apiVersion: config.apps.tanzu.vmware.com/v1alpha4
+kind: ConfigurationSlice
+metadata:
+  name: greeter-config
+  namespace: my-apps
+spec:
+  configurationSource: greeter-config-source
+  content:
+  - greeter/dev
+  configMapStrategy: applicationProperties
+  interval: 10m

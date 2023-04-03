@@ -1,0 +1,34 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: greeter
+  namespace: my-apps
+  labels:
+    apps.tanzu.vmware.com/workload-type: web
+    apps.tanzu.vmware.com/has-tests: "true"
+    app.kubernetes.io/part-of: greeter
+spec:
+  build:
+    env:
+    - name: BP_JVM_VERSION
+      value: "17"
+    - name: BP_MAVEN_POM_FILE
+      value: "no-such-file"
+    - name: BP_GRADLE_BUILT_ARTIFACT
+      value: "greeter/build/libs/*.jar"
+  env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "development"
+  - name: SPRING_CONFIG_IMPORT
+    value: "${SERVICE_BINDING_ROOT}/spring-properties/"
+  serviceClaims:
+  - name: spring-properties
+    ref:
+      apiVersion: config.apps.tanzu.vmware.com/v1alpha4
+      kind: ConfigurationSlice
+      name: greeter-config
+  source:
+    git:
+      url: https://github.com/spring-cloud-services-samples/greeting
+      ref:
+        branch: main

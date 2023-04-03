@@ -1,0 +1,22 @@
+#! this workload deploys the custom built image with a modified version of spring-cloud-bindings built from the docker image directory
+#! it only works when mTLS is enabled on the eureka server. (see ../service-registry-k8s)
+
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: greeter-messages
+  namespace: my-apps
+  labels:
+    apps.tanzu.vmware.com/workload-type: server
+    app.kubernetes.io/part-of: greeter
+spec:
+  env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "development"
+  serviceClaims:
+    - name: eureka-x-binding
+      ref:
+        apiVersion: v1
+        kind: Secret
+        name: eureka-x-binding
+  image: tapacr.azurecr.io/tapacr/jmh/greeter-messages
